@@ -24,8 +24,10 @@ function getRandomSlug() {
 }
 
 export const Topbar = () => {
+  const DEFAULT_LANGUAGE = "node.js";
+
   const [replId, setReplId] = useState<string>(() => getRandomSlug());
-  const [language, setLanguage] = useState<string>();
+  const [language, setLanguage] = useState<string>(DEFAULT_LANGUAGE);
 
   //   const getRandomSlug = () => {
   //     return SLUG_WORKS[Math.floor(Math.random() * SLUG_WORKS.length)];
