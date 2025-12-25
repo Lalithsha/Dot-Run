@@ -9,21 +9,31 @@ app.use(express.json());
 app.use(cors())
  
 app.post('/api/v1/project',async(req:Request,res:Response)=>{
-    // Hit database to ensure this replId is not taken
-    const {replId, language} = req.body;
+    try {
+        // Hit database to ensure this replId is not taken
+        const {replId, language} = req.body;
+        
+        console.log('[API] Received request:', { replId, language });
 
+        if(!replId){
+            return res.status(400).json({error:"replId is required"});
+        }
 
-    if(!replId){
-        return res.status(400).json({error:"replId is required"});
+        if(!language){
+            return res.status(400).json({error:"language is required"});
+        }
+
+        await copys3Folder(`base/${language}`,`code/${replId}`);
+        return res.send("project created successfully");
+    } catch (error) {
+        console.error('[API] Error processing request:', error);
+        return res.status(500).json({error: error instanceof Error ? error.message : "Internal server error"});
     }
-
-    await copys3Folder(`base/${language}`,`code/${replId}`);
-    return res.send("project created successfully");
   }
 );
 
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT || '3000');
 
 app.listen(PORT, () => {
-  console.log("listening on port 3000");
+  console.log(`listening on port ${PORT}`);
 });

@@ -1,22 +1,14 @@
-import axios from "axios";
-
-import { useState } from "react";
+import { Topbar } from "./Topbar";
 
 const Home = () => {
-  const [replId, setReplId] = useState<string>();
-  const [language, setLanguage] = useState<string>();
+  return <Topbar />;
+};
 
-  const handleCreateRepl = () => {
-    axios.post("http://localhost:3000/api/v1/repls", {
-      replId,
-      language,
-    });
-  };
+export default Home;
 
-  return (
-    <div>
-      <h1>Home</h1>{" "}
-      <input
+/* 
+
+ {/* <input
         type="text"
         value={replId}
         onChange={(e) => setReplId(e.target.value)}
@@ -34,9 +26,4 @@ const Home = () => {
         <option value="c++">C++</option>
         <option value="c">C</option>
       </select>
-      <button onClick={handleCreateRepl}>Create </button>
-    </div>
-  );
-};
-
-export default Home;
+      <button onClick={handleCreateRepl}>Create </button> */
