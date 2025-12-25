@@ -23,6 +23,11 @@ app.post('/api/v1/project',async(req:Request,res:Response)=>{
             return res.status(400).json({error:"language is required"});
         }
 
+        const ALLOWED_LANGUAGES = ["node.js", "python", "javascript", "java", "c++", "c"];
+        if (!ALLOWED_LANGUAGES.includes(language)) {
+            return res.status(400).json({ error: "Invalid language" });
+        }
+
         await copys3Folder(`base/${language}`,`code/${replId}`);
         return res.send("project created successfully");
     } catch (error) {

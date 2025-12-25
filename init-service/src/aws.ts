@@ -3,8 +3,10 @@ import {
     CopyObjectCommand,
     paginateListObjectsV2,
     S3ServiceException,
-    PutObjectCommand,
   } from "@aws-sdk/client-s3";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Initialize S3 client for Cloudflare R2
 const s3Client = new S3Client({
@@ -13,12 +15,10 @@ const s3Client = new S3Client({
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
-  },
-  forcePathStyle: true
+  }
 });
 
 const BUCKET_NAME = process.env.S3_BUCKET_NAME || "";
-
 /**
  * Copy all objects from source folder to destination folder in R2
  * @param sourcePrefix - Source folder prefix (e.g., "base/javascript")
@@ -78,8 +78,6 @@ export async function copys3Folder(
       console.log(`  ${index + 1}. ${key}`);
     });
 
-    await createFolder(BUCKET_NAME, destPrefix);
-
     console.log(`[R2 Copy] Starting to copy files...`);
     // Copy each object
     const copyPromises = objectKeys.map(async (sourceKey) => {
@@ -118,23 +116,5 @@ export async function copys3Folder(
   } catch (error) {
     console.error("Error copying R2 folder:", error);
     throw error;
-  }
-
-  async function createFolder(bucketName: string, folderName: string) {
-    const params = {
-      Bucket: bucketName,
-      Key: `${folderName}/`, // The trailing slash creates the folder representation
-      Body: "", // Can be an empty string
-    };
-  
-    try {
-      const command = new PutObjectCommand(params);
-      await s3Client.send(command);
-      console.log(`Folder '${folderName}' created successfully in bucket '${bucketName}'`);
-    } catch (err) {
-      console.error("Error creating folder:", err);
-    }
-  }
-  
-  
+  } 
 }
